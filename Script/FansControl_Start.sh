@@ -21,7 +21,7 @@
 
 # 发送运行失败通知邮件函数
 send_failure_notification() {
-SUBJECT="戴尔服务器风扇开机控温脚本 - 运行失败，请检查服务器状态"
+SUBJECT="超微X11SSM-F服务器风扇开机控温脚本 - 运行失败，请检查服务器状态"
 BODY=$(cat $LOG_FILE)
 echo "$BODY" | mail -s "$SUBJECT" $EMAIL
 }
@@ -62,7 +62,7 @@ fi
 # 设置退出时执行的清理操作
 cleanup() {
     if [ $? -ne 0 ]; then
-        log_and_output "戴尔服务器风扇开机控温脚本运行失败"
+        log_and_output "超微X11SSM-F服务器风扇开机控温脚本运行失败"
         send_failure_notification
     fi
 }
@@ -81,12 +81,12 @@ fi
 
 # 发送通知邮件函数
 send_notification() {
-SUBJECT="戴尔服务器风扇开机控温脚本 - 运行成功"
+SUBJECT="超微X11SSM-F服务器风扇开机控温脚本 - 运行成功"
 BODY=$(cat $LOG_FILE)
 echo "$BODY" | mail -s "$SUBJECT" $EMAIL
 }
 
-log_and_output "戴尔服务器风扇控制脚本运行中..." 
+log_and_output "超微X11SSM-F服务器风扇控制脚本运行中..." 
 
 # 检查是否支持 IPMI
 log_and_output "检查是否支持 IPMI"
@@ -109,11 +109,17 @@ fi
 
 # 开/关 风扇自动调节，当最后一个16进制数为0x00时为关闭，0x01时为开启
 log_and_output "关闭风扇自动调节"
-ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x01 0x00
+ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x45 0x01 0x00
+sleep 5
 # ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x01 0x01
 
 # 设置风扇转速0x14对应20%
-# log_and_output "设置风扇转速0x14对应20%"
+log_and_output "设置风扇50%"
+#0x00表示对系统区域的风扇调速
+ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x32
+sleep 5
+#0x01表示对周边设备的风扇调速
+ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x32
 # ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x02 0xff 0x14
 
 # 设置风扇转速0x0f对应15%
@@ -121,8 +127,8 @@ ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x01 0x00
 # ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x03 0xff 0x0f
 
 # 设置风扇转速0x0a对应10%
-log_and_output "设置风扇转速0x0a对应10%"
-ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x04 0xff 0x0a
+#log_and_output "设置风扇转速0x0a对应10%"
+#ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x04 0xff 0x0a
 
 # 等待15min，待温度稳定后根据温度调整风扇转速
 log_and_output "等待15min，待温度稳定后根据温度调整风扇转速"
@@ -148,25 +154,31 @@ log_and_output "CPU平均温度: $average_temperature"
 
 # 根据传感器温度调整风扇转速
 log_and_output "根据传感器温度调整风扇转速"
-if [ $average_temperature -ge 55 ]; then
-    # 将风扇转速设置为20%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x02 0xff 0x14
-    log_and_output "风扇转速设置为20%"
-elif [ $average_temperature -ge 47 ]; then
-    # 将风扇转速设置为15%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x02 0xff 0x0f
-    log_and_output "风扇转速设置为15%"
+if [ $average_temperature -ge 45 ]; then
+    # 将风扇转速设置为60%
+    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x3C
+    sleep 5
+    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x3C
+    log_and_output "风扇转速设置为60%"
+elif [ $average_temperature -ge 40 ]; then
+    # 将风扇转速设置为50%
+    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x32
+    sleep 5
+    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x32
+    log_and_output "风扇转速设置为50%"
 else
-    # 将风扇转速设置为10%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x02 0xff 0x0a
-    log_and_output "风扇转速设置为10%"
+    # 将风扇转速设置为40%
+    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x28
+    sleep 5
+    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x28
+    log_and_output "风扇转速设置为40%"
 fi
 
-# 检查戴尔服务器风扇开机控制脚本运行状态
-log_and_output "检查戴尔服务器风扇开机控制脚本运行状态"
+# 检查超微X11SSM-F服务器风扇开机控制脚本运行状态
+log_and_output "检查超微X11SSM-F服务器风扇开机控制脚本运行状态"
 if [ $? -eq 0 ]; then
-    log_and_output "戴尔服务器风扇开机控制脚本运行成功"
+    log_and_output "超微X11SSM-F服务器风扇开机控制脚本运行成功"
     send_notification
 fi
 
-log_and_output "戴尔服务器风扇开机控制脚本运行完成"
+log_and_output "超微X11SSM-F服务器风扇开机控制脚本运行完成"
