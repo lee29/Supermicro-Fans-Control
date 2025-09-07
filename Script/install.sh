@@ -222,7 +222,11 @@ add_to_startup() {
 
     # 添加FansControl_Stability.sh到定时任务
     echo "正在添加FansControl_Stability.sh到定时任务..."
-    (try_catch crontab -l ; echo "* * * * * /root/ipmitool/FansControl_Stability.sh") | crontab -
+#每分钟执行一次
+#    (try_catch crontab -l ; echo "* * * * * /root/ipmitool/FansControl_Stability.sh") | crontab -
+#每5分钟执行一次
+    (try_catch crontab -l ; echo "*/5 * * * * /root/ipmitool/FansControl_Stability.sh") | crontab -
+    
 }
 
 # 一键安装脚本逻辑顺序
