@@ -115,10 +115,10 @@ $sensor_output"
 
 # 解析传感器温度值
 log_and_output "解析传感器温度值"
-temperature1=$(echo "$sensor_output" | grep "Temp" | awk 'NR==3 {print $(NF-2)}' | cut -d ' ' -f 1)
-temperature2=$(echo "$sensor_output" | grep "Temp" | awk 'NR==4 {print $(NF-2)}' | cut -d ' ' -f 1)
-log_and_output "CPU1: $temperature1 摄氏度"
-log_and_output "CPU2: $temperature2 摄氏度"
+temperature1=$(echo "$sensor_output" | grep "Temp" | awk 'NR==1 {print $(NF-2)}' | cut -d ' ' -f 1)
+temperature2=$(echo "$sensor_output" | grep "Temp" | awk 'NR==2 {print $(NF-2)}' | cut -d ' ' -f 1)
+log_and_output "CPU: $temperature1 摄氏度"
+log_and_output "PCH: $temperature2 摄氏度"
 
 # 计算温度平均值
 log_and_output "计算温度平均值"
