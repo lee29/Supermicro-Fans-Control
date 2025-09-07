@@ -23,7 +23,7 @@ source /root/ipmitool/config/config.cfg
 # 恢复System Board Fans为自动调节
 restore_fans_to_auto() {
     echo "正在恢复System Board Fans为自动调节..."
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x01 0x01
+    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x45 0x01 0x01
     echo "System Board Fans 已恢复为自动调节"
 }
 
@@ -49,7 +49,7 @@ uninstall_postfix() {
     sudo rm /etc/postfix/generic.db
 }
 
-# 删除戴尔服务器风扇控制脚本和相关文件
+# 删除超微X11SSM-F服务器风扇控制脚本和相关文件
 remove_fans_control() {
     echo "从开机启动中删除 FansControl_Start.sh"
     sudo update-rc.d -f FansControl_Start.sh remove
@@ -61,12 +61,12 @@ remove_fans_control() {
 # 执行一键卸载脚本
 uninstall_script() {
     restore_fans_to_auto
-    uninstall_mailutils
+    #uninstall_mailutils
     uninstall_ipmitool
-    uninstall_postfix
+    #uninstall_postfix
     remove_fans_control
 
-    echo "卸载完成！戴尔服务器风扇控制脚本和相关组件已被移除。"
+    echo "卸载完成！超微X11SSM-F服务器风扇控制脚本和相关组件已被移除。"
 }
 
 # 执行一键卸载脚本
