@@ -1,10 +1,10 @@
-# Dell-Fans-Control
-在Linux一键部署ipmitool工具，并自动控制戴尔服务器风扇转速，邮件通知运行结果
+# Supermicro-Fans-Control
+在飞牛OS一键部署ipmitool工具，并自动控制超微X11SSM-F服务器风扇转速
 
 ## 依赖
-- mailutils
+#- mailutils
 - ipmitool
-- Postfix
+#- Postfix
 
 在Ubuntu 22.04.3测试正常
 
@@ -12,12 +12,12 @@
 
 复制下列命令，执行一键安装脚本
 ```bash
-sudo mkdir -p /root/ipmitool/ && wget https://github.com/AUKcl/Dell-Fans-Control/raw/main/Script/install.sh -P /root/ipmitool/ && chmod +x /root/ipmitool/install.sh && bash /root/ipmitool/install.sh
+sudo mkdir -p /root/ipmitool/ && wget https://github.com/lee29/Supermicro-Fans-Control/raw/main/Script/install.sh -P /root/ipmitool/ && chmod +x /root/ipmitool/install.sh && bash /root/ipmitool/install.sh
 ```
 
 一键卸载脚本
 ```bash
-sudo wget https://github.com/AUKcl/Dell-Fans-Control/raw/main/Script/uninstall.sh -P /root/ipmitool/ && chmod +x /root/ipmitool/uninstall.sh && bash /root/ipmitool/uninstall.sh
+sudo wget https://github.com/lee29/Supermicro-Fans-Control/raw/main/Script/uninstall.sh -P /root/ipmitool/ && chmod +x /root/ipmitool/uninstall.sh && bash /root/ipmitool/uninstall.sh
 ```
 
 ## 修改配置
