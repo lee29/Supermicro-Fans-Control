@@ -83,7 +83,7 @@ log_and_output "超微X11SSM-F服务器风扇定时控温脚本运行中..."
 
 # 检查是否支持 IPMI
 log_and_output "检查是否支持 IPMI"
-ipmi_support=$(timeout $TIMEOUT ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD mc info 2>/dev/null)
+ipmi_support=$(timeout $TIMEOUT ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD mc info 2>/dev/null)
 
 # 判断IPMI是否超时
 if [ $? -eq 124 ]; then
@@ -102,7 +102,7 @@ fi
 
 # 获取传感器温度并设置超时
 log_and_output "获取传感器温度"
-sensor_output=$(timeout $TIMEOUT ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD sdr type temperature)
+sensor_output=$(timeout $TIMEOUT ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD sdr type temperature)
 
 # 判断获取传感器温度是否超时
 if [ $? -eq 124 ]; then
@@ -129,21 +129,21 @@ log_and_output "CPU平均温度: $average_temperature"
 log_and_output "根据传感器温度调整风扇转速"
 if [ $average_temperature -ge 45 ]; then
     # 将风扇转速设置为60%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x3C
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x3C
     sleep 5
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x3C
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x3C
     log_and_output "风扇转速设置为60%"
 elif [ $average_temperature -ge 40 ]; then
     # 将风扇转速设置为50%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x32
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x32
     sleep 5
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x32
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x32
     log_and_output "风扇转速设置为50%"
 else
     # 将风扇转速设置为40%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x28
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x28
     sleep 5
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x28
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x28
     log_and_output "风扇转速设置为40%"
 fi
 
