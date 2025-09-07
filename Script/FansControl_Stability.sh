@@ -43,8 +43,9 @@ mkdir -p $LOG_DIR
 
 # 设置日志文件路径，包括当前时间后缀
 #rm /root/ipmitool/log/*
-#LOG_FILE="$LOG_DIR/FansControl_Stability_log_$CURRENT_TIME.log"
-LOG_FILE="$LOG_DIR/FansControl_Stability_log.log"
+LOG_FILE="$LOG_DIR/FansControl_Stability_log_$CURRENT_TIME.log"
+find /root/ipmitool/log -type f -name "FansControl_Stability_log_*.log" -mmin +30 -delete
+
 
 # 检查日志文件是否被成功设置
 if [ -z "$LOG_FILE" ]; then
