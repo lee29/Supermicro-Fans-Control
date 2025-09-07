@@ -225,7 +225,9 @@ add_to_startup() {
 #每分钟执行一次
 #    (try_catch crontab -l ; echo "* * * * * /root/ipmitool/FansControl_Stability.sh") | crontab -
 #每3分钟执行一次
+    (try_catch crontab -l ; echo "*/30 * * * * find /root/ipmitool/log -type f -name 'FansControl_Stability_log_*.log' -delete") | crontab -
     (try_catch crontab -l ; echo "*/3 * * * * /root/ipmitool/FansControl_Stability.sh") | crontab -
+
     
 }
 
