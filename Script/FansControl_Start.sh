@@ -19,12 +19,12 @@
 #    
 #    AUKcl's email:kaixuan135@outloook.com
 
-# 发送运行失败通知邮件函数
-send_failure_notification() {
-SUBJECT="超微X11SSM-F服务器风扇开机控温脚本 - 运行失败，请检查服务器状态"
-BODY=$(cat $LOG_FILE)
-echo "$BODY" | mail -s "$SUBJECT" $EMAIL
-}
+# # 发送运行失败通知邮件函数
+# send_failure_notification() {
+# SUBJECT="超微X11SSM-F服务器风扇开机控温脚本 - 运行失败，请检查服务器状态"
+# BODY=$(cat $LOG_FILE)
+# echo "$BODY" | mail -s "$SUBJECT" $EMAIL
+# }
 
 # 输出信息到日志文件和标准输出
 log_and_output() {
@@ -79,12 +79,12 @@ if ! ping -c 1 -w 2 $IP > /dev/null; then
     exit 1
 fi
 
-# 发送通知邮件函数
-send_notification() {
-SUBJECT="超微X11SSM-F服务器风扇开机控温脚本 - 运行成功"
-BODY=$(cat $LOG_FILE)
-echo "$BODY" | mail -s "$SUBJECT" $EMAIL
-}
+# # 发送通知邮件函数
+# send_notification() {
+# SUBJECT="超微X11SSM-F服务器风扇开机控温脚本 - 运行成功"
+# BODY=$(cat $LOG_FILE)
+# echo "$BODY" | mail -s "$SUBJECT" $EMAIL
+# }
 
 log_and_output "超微X11SSM-F服务器风扇控制脚本运行中..." 
 
