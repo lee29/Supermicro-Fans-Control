@@ -90,7 +90,7 @@ log_and_output "超微X11SSM-F服务器风扇控制脚本运行中..."
 
 # 检查是否支持 IPMI
 log_and_output "检查是否支持 IPMI"
-ipmi_support=$(timeout $TIMEOUT ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD mc info 2>/dev/null)
+ipmi_support=$(timeout $TIMEOUT ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD mc info 2>/dev/null)
 
 # 判断IPMI是否超时
 if [ $? -eq 124 ]; then
@@ -109,26 +109,26 @@ fi
 
 # 开/关 风扇自动调节，当最后一个16进制数为0x00时为关闭，0x01时为开启
 log_and_output "关闭风扇自动调节"
-ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x45 0x01 0x00
+ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x45 0x01 0x00
 sleep 5
-# ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x01 0x01
+# ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x01 0x01
 
 # 设置风扇转速0x14对应20%
 log_and_output "设置风扇50%"
 #0x00表示对系统区域的风扇调速
-ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x32
+ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x32
 sleep 5
 #0x01表示对周边设备的风扇调速
-ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x32
-# ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x02 0xff 0x14
+ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x32
+# ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x02 0xff 0x14
 
 # 设置风扇转速0x0f对应15%
 # log_and_output "设置风扇转速0x0f对应15%"
-# ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x03 0xff 0x0f
+# ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x03 0xff 0x0f
 
 # 设置风扇转速0x0a对应10%
 #log_and_output "设置风扇转速0x0a对应10%"
-#ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x04 0xff 0x0a
+#ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x30 0x04 0xff 0x0a
 
 # 等待15min，待温度稳定后根据温度调整风扇转速
 log_and_output "等待15min，待温度稳定后根据温度调整风扇转速"
@@ -136,7 +136,7 @@ sleep 900
 
 # 获取传感器温度
 log_and_output "获取传感器温度"
-sensor_output=$(ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD sdr type temperature)
+sensor_output=$(ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD sdr type temperature)
 log_and_output "传感器温度结果:
 $sensor_output"
 
@@ -156,21 +156,21 @@ log_and_output "CPU平均温度: $average_temperature"
 log_and_output "根据传感器温度调整风扇转速"
 if [ $average_temperature -ge 45 ]; then
     # 将风扇转速设置为60%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x3C
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x3C
     sleep 5
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x3C
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x3C
     log_and_output "风扇转速设置为60%"
 elif [ $average_temperature -ge 40 ]; then
     # 将风扇转速设置为50%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x32
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x32
     sleep 5
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x32
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x32
     log_and_output "风扇转速设置为50%"
 else
     # 将风扇转速设置为40%
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x28
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x00 0x28
     sleep 5
-    ipmitool -I lanplus -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x28
+    ipmitool -I lan -H $IP -U $USERNAME -P $PASSWORD raw 0x30 0x70 0x66 0x01 0x01 0x28
     log_and_output "风扇转速设置为40%"
 fi
 
