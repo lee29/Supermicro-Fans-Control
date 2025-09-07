@@ -42,6 +42,7 @@ LOG_DIR="/root/ipmitool/log"
 mkdir -p $LOG_DIR
 
 # 设置日志文件路径，包括当前时间后缀
+find /root/ipmitool/log -type f -name "FansControl_Stability_log_*.log" -mmin +30 -delete
 LOG_FILE="$LOG_DIR/FansControl_Start_log_$CURRENT_TIME.log"
 
 # 检查日志文件是否被成功设置
