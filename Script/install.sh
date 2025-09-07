@@ -46,10 +46,10 @@ try_catch() {
 }
 
 # 输出欢迎消息
-echo -e "${GREEN}欢迎使用 Dell-Fans-Control 一键部署脚本${PLAIN}"
+echo -e "${GREEN}欢迎使用 Supermicro-Fans-Control 一键部署脚本${PLAIN}"
 echo -e "${GREEN}本程序将自动为您部署程序${PLAIN}"
 echo -e "${GREEN}如果您遇到问题可以在这里寻找答案： ${PLAIN}"
-echo -e "${YELLOW}https://github.com/AUKcl/Dell-Fans-Control${PLAIN}"
+echo -e "${YELLOW}https://github.com/lee29/Supermicro-Fans-Control${PLAIN}"
 
 read -p "按下回车以继续..."
 
@@ -104,15 +104,15 @@ TIMEOUT=$TIMEOUT
 EOF
 }
 
-# 下载戴尔服务器风扇控制脚本
+# 下载超微X11SSM-F服务器风扇控制脚本
 download_fans_control_script() {
-    echo "正在下载戴尔服务器风扇控制脚本..."
+    echo "正在下载超微X11SSM-F服务器风扇控制脚本..."
     try_catch sudo mkdir -p /root/ipmitool/
-    try_catch sudo wget -q -O /root/ipmitool/FansControl_Start.sh https://github.com/AUKcl/Dell-Fans-Control/raw/main/Script/FansControl_Start.sh
+    try_catch sudo wget -q -O /root/ipmitool/FansControl_Start.sh https://github.com/lee29/Supermicro-Fans-Control/raw/main/Script/FansControl_Start.sh
     try_catch sudo chmod +x /root/ipmitool/FansControl_Start.sh
-    try_catch sudo wget -q -O /root/ipmitool/FansControl_Stability.sh https://github.com/AUKcl/Dell-Fans-Control/raw/main/Script/FansControl_Stability.sh
+    try_catch sudo wget -q -O /root/ipmitool/FansControl_Stability.sh https://github.com/lee29/Supermicro-Fans-Control/raw/main/Script/FansControl_Stability.sh
     try_catch sudo chmod +x /root/ipmitool/FansControl_Stability.sh
-    try_catch sudo wget -q -O /root/ipmitool/fcc.sh https://github.com/AUKcl/Dell-Fans-Control/raw/main/fcc.sh
+    try_catch sudo wget -q -O /root/ipmitool/fcc.sh https://github.com/lee29/Supermicro-Fans-Control/raw/main/fcc.sh
     try_catch sudo chmod +x /root/ipmitool/fcc.sh
 }
 
@@ -229,17 +229,17 @@ add_to_startup() {
 install_script() {
     download_fans_control_script
     ask_ipmi_params
-    ask_email_address
-    ask_smtp_details
+    #ask_email_address
+    #ask_smtp_details
     set_timeout
     generate_cfg_config_file
-    install_mailutils
+    #install_mailutils
     install_ipmitool
-    install_postfix
-    configure_postfix
+    #install_postfix
+    #configure_postfix
     add_to_startup
 
-    echo "安装完成！戴尔服务器风扇控制脚本已添加到开机启动。"
+    echo "安装完成！超微X11SSM-F服务器风扇控制脚本已添加到开机启动。"
 }
 
 # 执行一键安装脚本
