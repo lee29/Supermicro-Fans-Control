@@ -63,7 +63,7 @@ fi
 cleanup() {
     if [ $? -ne 0 ]; then
         log_and_output "超微X11SSM-F服务器风扇开机控温脚本运行失败"
-        send_failure_notification
+        #send_failure_notification
     fi
 }
 
