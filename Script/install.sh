@@ -224,8 +224,8 @@ add_to_startup() {
     echo "正在添加FansControl_Stability.sh到定时任务..."
 #每分钟执行一次
 #    (try_catch crontab -l ; echo "* * * * * /root/ipmitool/FansControl_Stability.sh") | crontab -
-#每5分钟执行一次
-    (try_catch crontab -l ; echo "*/5 * * * * /root/ipmitool/FansControl_Stability.sh") | crontab -
+#每3分钟执行一次
+    (try_catch crontab -l ; echo "*/3 * * * * /root/ipmitool/FansControl_Stability.sh") | crontab -
     
 }
 
