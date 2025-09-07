@@ -61,17 +61,17 @@ ask_ipmi_params() {
 }
 
 # 询问用户通知邮箱地址
-ask_email_address() {
-    read -p "请输入通知邮箱地址: " EMAIL
-}
+# ask_email_address() {
+#     read -p "请输入通知邮箱地址: " EMAIL
+# }
 
 # 询问用户SMTP服务器、端口号、用户名和密码
-ask_smtp_details() {
-    read -p "请输入SMTP服务器地址: " SMTP_SERVER
-    read -p "请输入SMTP服务器端口号: " SMTP_PORT
-    read -p "请输入SMTP用户名: " SMTP_USERNAME
-    read -p "请输入SMTP密码: " SMTP_PASSWORD
-}
+# ask_smtp_details() {
+#     read -p "请输入SMTP服务器地址: " SMTP_SERVER
+#     read -p "请输入SMTP服务器端口号: " SMTP_PORT
+#     read -p "请输入SMTP用户名: " SMTP_USERNAME
+#     read -p "请输入SMTP密码: " SMTP_PASSWORD
+# }
 
 # 默认的脚本运行超时时间（秒）
 DEFAULT_TIMEOUT=60
@@ -95,11 +95,11 @@ generate_cfg_config_file() {
 IP=$IP
 USERNAME=$USERNAME
 PASSWORD=$PASSWORD
-EMAIL=$EMAIL
-SMTP_SERVER=$SMTP_SERVER
-SMTP_PORT=$SMTP_PORT
-SMTP_USERNAME=$SMTP_USERNAME
-SMTP_PASSWORD=$SMTP_PASSWORD
+# EMAIL=$EMAIL
+# SMTP_SERVER=$SMTP_SERVER
+# SMTP_PORT=$SMTP_PORT
+# SMTP_USERNAME=$SMTP_USERNAME
+# SMTP_PASSWORD=$SMTP_PASSWORD
 TIMEOUT=$TIMEOUT
 EOF
 }
@@ -116,12 +116,12 @@ download_fans_control_script() {
     try_catch sudo chmod +x /root/ipmitool/fcc.sh
 }
 
-# 安装mailutils
-install_mailutils() {
-    echo "正在安装mailutils..."
-    try_catch sudo apt-get update
-    try_catch sudo apt-get install -y mailutils
-}
+# # 安装mailutils
+# install_mailutils() {
+#     echo "正在安装mailutils..."
+#     try_catch sudo apt-get update
+#     try_catch sudo apt-get install -y mailutils
+# }
 
 # 安装ipmitool
 install_ipmitool() {
@@ -130,88 +130,88 @@ install_ipmitool() {
     try_catch sudo apt-get install -y ipmitool
 }
 
-# 安装Postfix
-install_postfix() {
-    echo "正在安装Postfix..."
-    try_catch sudo debconf-set-selections <<< "postfix postfix/mailname string localhost"
-    try_catch sudo debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-    try_catch sudo apt-get install -y postfix
-}
+# # 安装Postfix
+# install_postfix() {
+#     echo "正在安装Postfix..."
+#     try_catch sudo debconf-set-selections <<< "postfix postfix/mailname string localhost"
+#     try_catch sudo debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+#     try_catch sudo apt-get install -y postfix
+# }
 
-# 配置Postfix
-configure_postfix() {
-    echo "正在配置Postfix..."
+# # 配置Postfix
+# configure_postfix() {
+#     echo "正在配置Postfix..."
 
-    # 1. 设置 myhostname
-    if ! grep -q "myhostname = " /etc/postfix/main.cf; then
-        try_catch echo "myhostname = localhost" | sudo tee -a /etc/postfix/main.cf > /dev/null
-    else
-        try_catch sudo sed -i "s|myhostname =.*|myhostname = localhost|" /etc/postfix/main.cf
-    fi
+#     # 1. 设置 myhostname
+#     if ! grep -q "myhostname = " /etc/postfix/main.cf; then
+#         try_catch echo "myhostname = localhost" | sudo tee -a /etc/postfix/main.cf > /dev/null
+#     else
+#         try_catch sudo sed -i "s|myhostname =.*|myhostname = localhost|" /etc/postfix/main.cf
+#     fi
 
-    # 2. 设置 mydestination
-    if ! grep -q "mydestination = " /etc/postfix/main.cf; then
-        try_catch echo "mydestination = localhost" | sudo tee -a /etc/postfix/main.cf > /dev/null
-    else
-        try_catch sudo sed -i "s|mydestination =.*|mydestination = localhost|" /etc/postfix/main.cf
-    fi
+#     # 2. 设置 mydestination
+#     if ! grep -q "mydestination = " /etc/postfix/main.cf; then
+#         try_catch echo "mydestination = localhost" | sudo tee -a /etc/postfix/main.cf > /dev/null
+#     else
+#         try_catch sudo sed -i "s|mydestination =.*|mydestination = localhost|" /etc/postfix/main.cf
+#     fi
 
-    # 3. 设置 inet_interfaces
-    if ! grep -q "inet_interfaces = " /etc/postfix/main.cf; then
-        try_catch echo "inet_interfaces = loopback-only" | sudo tee -a /etc/postfix/main.cf > /dev/null
-    else
-        try_catch sudo sed -i "s|inet_interfaces =.*|inet_interfaces = loopback-only|" /etc/postfix/main.cf
-    fi
+#     # 3. 设置 inet_interfaces
+#     if ! grep -q "inet_interfaces = " /etc/postfix/main.cf; then
+#         try_catch echo "inet_interfaces = loopback-only" | sudo tee -a /etc/postfix/main.cf > /dev/null
+#     else
+#         try_catch sudo sed -i "s|inet_interfaces =.*|inet_interfaces = loopback-only|" /etc/postfix/main.cf
+#     fi
 
-    # 4. 设置 relayhost
-    if ! grep -q "relayhost = " /etc/postfix/main.cf; then
-        try_catch echo "relayhost = [$SMTP_SERVER]:$SMTP_PORT" | sudo tee -a /etc/postfix/main.cf > /dev/null
-    else
-        try_catch sudo sed -i "s|relayhost =.*|relayhost = [$SMTP_SERVER]:$SMTP_PORT|" /etc/postfix/main.cf
-    fi
+#     # 4. 设置 relayhost
+#     if ! grep -q "relayhost = " /etc/postfix/main.cf; then
+#         try_catch echo "relayhost = [$SMTP_SERVER]:$SMTP_PORT" | sudo tee -a /etc/postfix/main.cf > /dev/null
+#     else
+#         try_catch sudo sed -i "s|relayhost =.*|relayhost = [$SMTP_SERVER]:$SMTP_PORT|" /etc/postfix/main.cf
+#     fi
 
-    # 5. 启用 smtp_sasl_auth_enable
-    if ! grep -q "smtp_sasl_auth_enable = " /etc/postfix/main.cf; then
-        try_catch echo "smtp_sasl_auth_enable = yes" | sudo tee -a /etc/postfix/main.cf > /dev/null
-    else
-        try_catch sudo sed -i "s|smtp_sasl_auth_enable =.*|smtp_sasl_auth_enable = yes|" /etc/postfix/main.cf
-    fi
+#     # 5. 启用 smtp_sasl_auth_enable
+#     if ! grep -q "smtp_sasl_auth_enable = " /etc/postfix/main.cf; then
+#         try_catch echo "smtp_sasl_auth_enable = yes" | sudo tee -a /etc/postfix/main.cf > /dev/null
+#     else
+#         try_catch sudo sed -i "s|smtp_sasl_auth_enable =.*|smtp_sasl_auth_enable = yes|" /etc/postfix/main.cf
+#     fi
 
-    # 6. 设置 smtp_sasl_password_maps
-    if ! grep -q "smtp_sasl_password_maps = " /etc/postfix/main.cf; then
-        try_catch echo "smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd" | sudo tee -a /etc/postfix/main.cf > /dev/null
-    else
-        try_catch sudo sed -i "s|smtp_sasl_password_maps =.*|smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd|" /etc/postfix/main.cf
-    fi
+#     # 6. 设置 smtp_sasl_password_maps
+#     if ! grep -q "smtp_sasl_password_maps = " /etc/postfix/main.cf; then
+#         try_catch echo "smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd" | sudo tee -a /etc/postfix/main.cf > /dev/null
+#     else
+#         try_catch sudo sed -i "s|smtp_sasl_password_maps =.*|smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd|" /etc/postfix/main.cf
+#     fi
 
-    # 7. 设置 smtp_generic_maps
-    if ! grep -q "smtp_generic_maps = " /etc/postfix/main.cf; then
-        try_catch echo "smtp_generic_maps = hash:/etc/postfix/generic" | sudo tee -a /etc/postfix/main.cf > /dev/null
-    else
-        try_catch sudo sed -i "s|smtp_generic_maps =.*|smtp_generic_maps = hash:/etc/postfix/generic|" /etc/postfix/main.cf
-    fi
+#     # 7. 设置 smtp_generic_maps
+#     if ! grep -q "smtp_generic_maps = " /etc/postfix/main.cf; then
+#         try_catch echo "smtp_generic_maps = hash:/etc/postfix/generic" | sudo tee -a /etc/postfix/main.cf > /dev/null
+#     else
+#         try_catch sudo sed -i "s|smtp_generic_maps =.*|smtp_generic_maps = hash:/etc/postfix/generic|" /etc/postfix/main.cf
+#     fi
 
-    # 8. 设置 smtp_sasl_security_options
-    if ! grep -q "smtp_sasl_security_options = " /etc/postfix/main.cf; then
-        try_catch echo "smtp_sasl_security_options = noanonymous" | sudo tee -a /etc/postfix/main.cf > /dev/null
-    else
-        try_catch sudo sed -i "s|smtp_sasl_security_options =.*|smtp_sasl_security_options = noanonymous|" /etc/postfix/main.cf
-    fi
+#     # 8. 设置 smtp_sasl_security_options
+#     if ! grep -q "smtp_sasl_security_options = " /etc/postfix/main.cf; then
+#         try_catch echo "smtp_sasl_security_options = noanonymous" | sudo tee -a /etc/postfix/main.cf > /dev/null
+#     else
+#         try_catch sudo sed -i "s|smtp_sasl_security_options =.*|smtp_sasl_security_options = noanonymous|" /etc/postfix/main.cf
+#     fi
 
-    # 9. 设置 sasl_passwd
-    try_catch echo "[$SMTP_SERVER]:$SMTP_PORT    $SMTP_USERNAME:$SMTP_PASSWORD" | sudo tee /etc/postfix/sasl_passwd > /dev/null
-    try_catch sudo postmap /etc/postfix/sasl_passwd
-    try_catch sudo chmod 600 /etc/postfix/sasl_passwd
+#     # 9. 设置 sasl_passwd
+#     try_catch echo "[$SMTP_SERVER]:$SMTP_PORT    $SMTP_USERNAME:$SMTP_PASSWORD" | sudo tee /etc/postfix/sasl_passwd > /dev/null
+#     try_catch sudo postmap /etc/postfix/sasl_passwd
+#     try_catch sudo chmod 600 /etc/postfix/sasl_passwd
 
-    # 10. 添加发件人映射
-    hostname=$(hostname)
-    current_user=$(whoami)
-    sender_mapping="$current_user@$hostname $EMAIL"
-    try_catch echo "$sender_mapping" | sudo tee -a /etc/postfix/generic > /dev/null
-    try_catch sudo postmap /etc/postfix/generic
+#     # 10. 添加发件人映射
+#     hostname=$(hostname)
+#     current_user=$(whoami)
+#     sender_mapping="$current_user@$hostname $EMAIL"
+#     try_catch echo "$sender_mapping" | sudo tee -a /etc/postfix/generic > /dev/null
+#     try_catch sudo postmap /etc/postfix/generic
 
-    try_catch sudo systemctl restart postfix
-}
+#     try_catch sudo systemctl restart postfix
+# }
 
 # 添加FansControl_Start.sh到开机启动
 add_to_startup() {
